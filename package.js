@@ -11,7 +11,7 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-  api.use('erasaur:meteor-lodash');
+  api.use('erasaur:meteor-lodash@3.10.1_1');
   api.versionsFrom('1.1.0.2');
   api.addFiles(['ping.js'], 'server');
   api.export('Ping');
