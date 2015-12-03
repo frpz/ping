@@ -22,10 +22,10 @@ ping = function(address, nb, log, callback) {
 
 	if(log) console.log("start pinging "+nb+" times...");
 	if (platform == 'linux') { // Linux.
-		process = cp.spawn('/bin/ping', ['-n', '-w '+(nb + 1), '-c '+nb, address]);
+		process = cp.spawn('/bin/ping', ['-n', '-w '+(nb + 3), '-c '+nb, address]);
 	}
 	else if (platform == 'darwin') { // Mac OS X.
-		process = cp.spawn('/sbin/ping', ['-n', '-t '+(nb + 1), '-c '+nb, address]);
+		process = cp.spawn('/sbin/ping', ['-n', '-t '+(nb + 3), '-c '+nb, address]);
 	}
 	else if (platform.match(/^win/)) { // Windows.
 		process = cp.spawn('C:/windows/system32/ping.exe', ['-n', nb, '-w', '5000', address]);
