@@ -16,44 +16,25 @@ var os  = Npm.require('os');
  */
 ping = function(address, nb, log, callback) {
 	var platform = os.platform();
-	var process = null;
-	var chunks = [];
-	var totalLength = 0;
+	var cmd = "";
 
 	if(log) console.log("start pinging "+nb+" times...");
 	if (platform == 'linux') { // Linux.
-		process = cp.spawn('/bin/ping', ['-n', '-w '+(nb + 3), '-c '+nb, address]);
+		cmd = '/bin/ping -n -w '+(nb + 3)+' -c '+nb+" "+ address;
 	}
 	else if (platform == 'darwin') { // Mac OS X.
-		process = cp.spawn('/sbin/ping', ['-n', '-t '+(nb + 3), '-c '+nb, address]);
+		cmd = '/sbin/ping -n -t '+(nb + 3)+' -c '+nb+" "+ address;
 	}
 	else if (platform.match(/^win/)) { // Windows.
-		process = cp.spawn('C:/windows/system32/ping.exe', ['-n', nb, '-w', '5000', address]);
+		cmd = 'C:/windows/system32/ping.exe -n '+ nb+ ' -w 5000 '+ address;
 		platform = 'windows'; // Set explicitly to prevent further regex.
 	}
 	else { // Platform not recognized.
 		throw new Meteor.Error('ping.ping: Operating system could not be identified.');
 	}
 
-	// add data to chunks (this function may be called many times)
-	process.stdout.on('data', function (data) {
-		totalLength += data.length;
-		chunks.push(data);
-	});
-
-	// Handle errors.
-	process.on('error', function(e) {
-		throw new Meteor.Error('ping.ping: There was an error while executing the ping program. check your path or filesystem permissions.');
-	});
-	process.stderr.on('data', function (data) {
-		if(log) console.log("ping error", data.toString());
-		throw new Meteor.Error(data.toString());
-		//if (res.status !== true) res = {latency: 0, status: false};
-	});
-
-	//parse the results. this function is called once, only when the end has been received.
-	process.on('exit', function (data) {
-		var body = Buffer.concat(chunks, totalLength).toString();
+	cp.exec(cmd, function (err, stdout, stderr) {
+		var body = stdout;
 		var latency = 0, status = false, lost=100;
 		try{
 			if(platform == "windows")
@@ -63,7 +44,7 @@ ping = function(address, nb, log, callback) {
 			lost       = parseInt(/(\d+)%/.exec(body).pop());
 			status     = ! lost > 0;
 		}catch(e){ } //no need to do anything because of default values
-		if(log) console.log("=== ping exit: \n", body);
+		if(log) console.log("==== ping result: \n", body);
 		callback && callback(latency, lost, status, body);
 	});
 }
@@ -76,7 +57,7 @@ ping = function(address, nb, log, callback) {
  * @returns {object} status as offline or online
  */
 Ping.host = function (host, nb, log) {
-	if(nb == undefined) nb = 1;
+	if(nb  == undefined) nb = 1;
 	if(log == undefined) log = false;
 	return Ping.range([host], nb, log).pop();
 };
@@ -91,7 +72,7 @@ Ping.host = function (host, nb, log) {
 Ping.range = function (range, nb, log){
 	var hostnameRegex = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/;
 	var ipv4Regex     = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-	if(nb == undefined) nb = 1;
+	if(nb  == undefined) nb = 1;
 	if(log == undefined) log = false;
 	var Future = Npm.require('fibers/future');
 	var futures = _.map(range, function(ip,k) {
