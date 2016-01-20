@@ -40,7 +40,7 @@ ping = function(address, nb, log, callback) {
 			if(platform == "windows")
 				latency = parseInt(body.match(/\d+ms/g).pop());
 			else
-				latency = Math.round(parseFloat(body.match(/(rtt|round-trip).*/g).pop().match(/[^\/=]+/g)[5]));
+				latency = Math.round(parseFloat(body.match(/(rtt|round-trip).*/g).pop().match(/[^\/=]+/g)[5])*10)/10;
 			lost       = parseInt(/(\d+)%/.exec(body).pop());
 			status     = ! lost > 0;
 		}catch(e){ } //no need to do anything because of default values
