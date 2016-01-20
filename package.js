@@ -1,6 +1,6 @@
 Package.describe({
   name: 'frpz:ping',
-  version: '1.0.3',
+  version: '1.0.4',
   // Brief, one-line summary of the package.
   summary: 'Meteor package to perform an ICMP ping to a host using ping binaries on system (linux, mac, windows)',
   // URL to the Git repository containing the source code for this package.
