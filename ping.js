@@ -38,7 +38,7 @@ ping = function(address, nb, log, callback) {
 		var latency = 0, status = false, lost=100;
 		try{
 			if(platform == "windows")
-				latency = parseInt(w.match(/\d+ms/g).pop());
+				latency = parseInt(body.match(/\d+ms/g).pop());
 			else
 				latency = Math.round(parseFloat(body.match(/(rtt|round-trip).*/g).pop().match(/[^\/=]+/g)[5]));
 			lost       = parseInt(/(\d+)%/.exec(body).pop());
