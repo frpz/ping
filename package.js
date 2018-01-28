@@ -1,6 +1,6 @@
 Package.describe({
   name: 'frpz:ping',
-  version: '1.0.4',
+  version: '1.1.0',
   // Brief, one-line summary of the package.
   summary: 'Meteor package to perform an ICMP ping to a host using ping binaries on system (linux, mac, windows)',
   // URL to the Git repository containing the source code for this package.
@@ -11,7 +11,6 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-  api.use('erasaur:meteor-lodash@3.10.1_1');
   api.versionsFrom('1.1.0.2');
   api.addFiles(['ping.js'], 'server');
   api.export('Ping');

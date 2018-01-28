@@ -1,7 +1,6 @@
 Ping = {};
 
 
-var sys = Npm.require('util');
 var cp  = Npm.require('child_process');
 var os  = Npm.require('os');
 
@@ -75,7 +74,7 @@ Ping.range = function (range, nb, log){
 	if(nb  == undefined) nb = 1;
 	if(log == undefined) log = false;
 	var Future = Npm.require('fibers/future');
-	var futures = _.map(range, function(ip,k) {
+	var futures = range.map(function(ip,k) {
 		// Set up a future for the current job
 		var future = new Future();
 		// A callback so the job can signal completion
@@ -110,6 +109,6 @@ Ping.range = function (range, nb, log){
 
 	Future.wait(futures);
 	// and grab the results out.
-	return _.invoke(futures, 'get');
+	return futures.map(function(v){return v.value});
 };
 
